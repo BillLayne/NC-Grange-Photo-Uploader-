@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Insurance Photo Guide | Bill Layne Insurance & NC Grange</title>
+    <meta name="description" content="Step-by-step photo upload guide for NC Grange Mutual homeowners insurance">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base Styles & Variables --- */
+        :root {
+            --primary-color: #0056b3;
+            --accent-color: #28a745;
+            --warning-color: #ffc107;
+            --error-color: #dc3545;
+            --bg-color: #f0f4f8;
+            --text-color: #333;
+            --light-text: #666;
+            --border-color: #e0e0e0;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 30px 40px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .agency-info h1 {
+            font-size: 22px;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        .agency-info p {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        /* --- Customer Info Form --- */
+        .customer-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .customer-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-size: 14px;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .form-group input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0,86,179,0.1);
+        }
+
+        /* --- Progress Indicator --- */
+        .progress-container {
+            padding: 15px 40px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.4s ease-in-out;
+            border-radius: 4px;
+        }
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* --- Upload Status Tracker --- */
+        .upload-tracker {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 200px;
+            z-index: 1000;
+        }
+        .upload-tracker h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        .upload-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
+            font-size: 13px;
+        }
+        .upload-item.complete { color: var(--accent-color); }
+        .upload-item.pending { color: var(--light-text); }
+        .status-icon { font-size: 16px; }
+
+        /* --- Main Content --- */
+        main {
+            padding: 40px;
+            min-height: 500px;
+        }
+        .step-container { display: none; }
+        .step-container.active { display: block; }
+        h2 { 
+            font-size: 26px; 
+            margin-bottom: 15px; 
+            color: var(--primary-color); 
+        }
+        .step-content { 
+            display: flex; 
+            gap: 30px; 
+            margin-bottom: 30px; 
+        }
+        .step-text { flex: 1; }
+        .step-image { 
+            flex: 1; 
+            display: flex; 
+            align-items: center; 
+        }
+        .example-image { 
+            width: 100%; 
+            height: auto; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            border: 1px solid var(--border-color); 
+        }
+
+        /* --- Photo Upload Section --- */
+        .upload-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            color: white;
+        }
+        .upload-section h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .upload-area {
+            background: rgba(255,255,255,0.95);
+            border: 2px dashed #764ba2;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
+        .upload-area:hover {
+            background: rgba(255,255,255,1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .upload-area.dragover {
+            background: rgba(102,126,234,0.1);
+            border-color: var(--primary-color);
+        }
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .file-input {
+            display: none;
+        }
+        .upload-button {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        .upload-button:hover {
+            background: #004494;
+        }
+        .upload-requirements {
+            background: rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        /* --- Preview Section --- */
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .preview-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .preview-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--error-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+        .upload-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+        .upload-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .upload-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        .upload-status.uploading {
+            background: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+            display: block;
+        }
+
+        /* --- Helper Boxes --- */
+        .info-box {
+            background-color: #e7f1ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            margin-top: 20px;
+            font-size: 15px;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid var(--warning-color);
+            padding: 15px 20px;
+            margin-top: 20px;
+            font-size: 15px;
+            color: #856404;
+        }
+
+        /* --- Navigation --- */
+        .navigation { 
+            display: flex; 
+            justify-content: space-between; 
+            border-top: 1px solid var(--border-color); 
+            padding-top: 20px; 
+            margin-top: 30px; 
+        }
+        .btn { 
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: 600; 
+            transition: all 0.3s; 
+        }
+        .btn-primary { 
+            background-color: var(--primary-color); 
+            color: white; 
+        }
+        .btn-secondary { 
+            background-color: #6c757d; 
+            color: white; 
+        }
+        .btn-success { 
+            background-color: var(--accent-color); 
+            color: white; 
+        }
+        .btn:hover { 
+            opacity: 0.9; 
+            transform: translateY(-1px);
+        }
+        .btn:disabled { 
+            background-color: #ccc; 
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* --- Loading Spinner --- */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .container { 
+                margin: 15px; 
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            }
+            header, main { padding: 25px; }
+            .form-row { grid-template-columns: 1fr; }
+            .step-content { 
+                flex-direction: column-reverse; 
+                gap: 20px; 
+            }
+            .upload-tracker {
+                position: static;
+                margin-bottom: 20px;
+                width: 100%;
+            }
+            .preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="agency-info">
+                <h1>Bill Layne Insurance Agency</h1>
+                <p>1283 N Bridge St, Elkin, NC 28621 | (336) 835-1993</p>
+            </div>
+            <div class="logo">
+                <img src="https://i.imgur.com/Fesnkng.png" alt="NC Grange Mutual Insurance Logo">
+            </div>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-text" id="progressText">Getting Started</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="upload-tracker" id="uploadTracker" style="display: none;">
+            <h4>📸 Photos Uploaded</h4>
+            <div class="upload-item" id="tracker-exterior">
+                <span class="status-icon">⭕</span> Exterior (0/4)
+            </div>
+            <div class="upload-item" id="tracker-outbuildings">
+                <span class="status-icon">⭕</span> Outbuildings
+            </div>
+            <div class="upload-item" id="tracker-living">
+                <span class="status-icon">⭕</span> Living Room
+            </div>
+            <div class="upload-item" id="tracker-kitchen">
+                <span class="status-icon">⭕</span> Kitchen
+            </div>
+            <div class="upload-item" id="tracker-plumbing">
+                <span class="status-icon">⭕</span> Under Sinks
+            </div>
+            <div class="upload-item" id="tracker-electrical">
+                <span class="status-icon">⭕</span> Electrical Panel
+            </div>
+        </div>
+
+        <main>
+            <div class="step-container active" id="step-0">
+                <h2>Let's Get Started with Your Home Insurance Photos</h2>
+                <p style="font-size: 16px; margin-bottom: 20px;">
+                    To complete your NC Grange Mutual application, we need photos of your property. 
+                    This guide will help you take and upload each photo step by step.
+                </p>
+
+                <div class="customer-info">
+                    <h3>First, tell us who you are:</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customerName">Full Name *</label>
+                            <input type="text" id="customerName" required placeholder="John Smith">
+                        </div>
+                        <div class="form-group">
+                            <label for="customerPhone">Phone Number *</label>
+                            <input type="tel" id="customerPhone" required placeholder="(336) 555-0123">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customerEmail">Email Address *</label>
+                            <input type="email" id="customerEmail" required placeholder="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="policyNumber">Policy/Quote Number (if available)</label>
+                            <input type="text" id="policyNumber" placeholder="Optional">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="propertyAddress">Property Address *</label>
+                        <input type="text" id="propertyAddress" required placeholder="123 Main St, Elkin, NC 28621">
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>📱 How this works:</strong><br>
+                    • Take photos with your phone or select existing photos<br>
+                    • Upload them directly on each step<br>
+                    • We'll save everything automatically<br>
+                    • Takes about 10-15 minutes total
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" disabled>Back</button>
+                    <button class="btn btn-success" onclick="startProcess()">Start Photo Upload</button>
+                </div>
+            </div>
+
+            <div class="step-container" id="step-1">
+                <h2>Step 1 of 6: Exterior of Your Home</h2>
+                <div class="step-content">
+                    <div class="step-text">
+                        <h3>What we need:</h3>
+                        <p>Take <strong>4 photos</strong> - one of each side of your house:</p>
+                        <ul>
+                            <li>Front of the house</li>
+                            <li>Back of the house</li>
+                            <li>Left side</li>
+                            <li>Right side</li>
+                        </ul>
+                        <p><strong>Tip:</strong> Stand back far enough to capture the entire side from ground to roof.</p>
+                    </div>
+                    <div class="step-image">
+                        <img src="https://github.com/BillLayne/bill-layne-images/blob/main/general/all%204%20sides.webp?raw=true" 
+                             alt="Example showing all four sides of a house" class="example-image">
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <h3>📸 Upload Your Exterior Photos</h3>
+                    <div class="upload-area" onclick="document.getElementById('exterior-files').click()" 
+                         ondrop="handleDrop(event, 'exterior')" 
+                         ondragover="handleDragOver(event)" 
+                         ondragleave="handleDragLeave(event)">
+                        <div class="upload-icon">📁</div>
+                        <p><strong>Click to select photos or drag them here</strong></p>
+                        <p style="font-size: 14px; color: #666;">Select all 4 exterior photos at once</p>
+                        <input type="file" id="exterior-files" class="file-input" 
+                               accept="image/*" multiple onchange="handleFiles(this.files, 'exterior')">
+                    </div>
+                    <div class="upload-requirements">
+                        ✓ JPG, PNG, or HEIC format<br>
+                        ✓ Max 10MB per photo<br>
+                        ✓ Upload all 4 sides
+                    </div>
+                    <div id="exterior-preview" class="preview-container"></div>
+                    <div id="exterior-status" class="upload-status"></div>
+                    <button class="upload-button" onclick="uploadPhotos('exterior')" 
+                            id="exterior-upload-btn" style="display:none;">
+                        Upload Exterior Photos
+                    </button>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" onclick="prevStep(1)">Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(1)" id="next-1" disabled>Next Step</button>
+                </div>
+            </div>
+
+            <div class="step-container" id="step-2">
+                <h2>Step 2 of 6: Outbuildings and Structures</h2>
+                <div class="step-content">
+                    <div class="step-text">
+                        <h3>What we need:</h3>
+                        <p>Photos of any other structures on your property:</p>
+                        <ul>
+                            <li>Detached garages</li>
+                            <li>Sheds or barns</li>
+                            <li>Carports or workshops</li>
+                        </ul>
+                        <div class="info-box">
+                            <strong>No outbuildings?</strong> That's okay! Just click "Skip This Step" below.
+                        </div>
+                    </div>
+                    <div class="step-image">
+                        <img src="https://github.com/BillLayne/bill-layne-images/blob/main/general/shed%20outbuilding.webp?raw=true" 
+                             alt="Examples of outbuildings" class="example-image">
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <h3>📸 Upload Outbuilding Photos (Optional)</h3>
+                    <div class="upload-area" onclick="document.getElementById('outbuildings-files').click()"
+                         ondrop="handleDrop(event, 'outbuildings')" 
+                         ondragover="handleDragOver(event)" 
+                         ondragleave="handleDragLeave(event)">
+                        <div class="upload-icon">📁</div>
+                        <p><strong>Click to select photos or drag them here</strong></p>
+                        <p style="font-size: 14px; color: #666;">Or skip if you don't have outbuildings</p>
+                        <input type="file" id="outbuildings-files" class="file-input" 
+                               accept="image/*" multiple onchange="handleFiles(this.files, 'outbuildings')">
+                    </div>
+                    <div id="outbuildings-preview" class="preview-container"></div>
+                    <div id="outbuildings-status" class="upload-status"></div>
+                    <button class="upload-button" onclick="uploadPhotos('outbuildings')" 
+                            id="outbuildings-upload-btn" style="display:none;">
+                        Upload Outbuilding Photos
+                    </button>
+                    <button class="upload-button" onclick="skipStep('outbuildings')" 
+                            style="background: #6c757d; margin-left: 10px;">
+                        Skip This Step (No Outbuildings)
+                    </button>
+                </div>
+
+                <div class="navigation">
+                    <button class="btn btn-secondary" onclick="prevStep(2)">Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(2)" id="next-2" disabled>Next Step</button>
+                </div>
+            </div>
+
+            <div class="step-container" id="step-7">
+                <h2>🎉 All Photos Uploaded Successfully!</h2>
+                <div style="text-align: center; padding: 40px 0;">
+                    <div style="font-size: 72px; margin-bottom: 20px;">✅</div>
+                    <p style="font-size: 20px; margin-bottom: 30px;">
+                        Thank you for uploading your photos!<br>
+                        We've received everything we need.
+                    </p>
+                    
+                    <div class="info-box" style="max-width: 600px; margin: 0 auto; text-align: left;">
+                        <h3 style="margin-bottom: 15px;">What happens next?</h3>
+                        <ul>
+                            <li>We'll review your photos within 24-48 hours</li>
+                            <li>You'll receive an email confirmation shortly</li>
+                            <li>We'll contact you if we need any additional information</li>
+                            <li>Your quote will be finalized once review is complete</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <p><strong>Reference Number:</strong> <span id="referenceNumber"></span></p>
+                        <p style="margin-top: 10px;">Save this number for your records</p>
+                    </div>
+
+                    <button class="btn btn-success" onclick="window.print()" style="margin-top: 30px;">
+                        Print Confirmation
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Google Apps Script Web App URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCPAJfz3yGpjAU7v1iyIWDGEtrqdnp-jixA_cECYfz_sqO4OiOVYSn_OJb92G3ew_k/exec';
+        
+        // Customer data storage
+        let customerData = {};
+        let uploadedFiles = {
+            exterior: [],
+            outbuildings: [],
+            living: [],
+            kitchen: [],
+            plumbing: [],
+            electrical: []
+        };
+        let uploadStatus = {
+            exterior: false,
+            outbuildings: null, // null = not required
+            living: false,
+            kitchen: false,
+            plumbing: false,
+            electrical: false
+        };
+
+        // Start the process
+        function startProcess() {
+            // Validate customer info
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const email = document.getElementById('customerEmail').value;
+            const address = document.getElementById('propertyAddress').value;
+            
+            if (!name || !phone || !email || !address) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Store customer data
+            customerData = {
+                name: name,
+                phone: phone,
+                email: email,
+                policyNumber: document.getElementById('policyNumber').value,
+                address: address,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Show upload tracker
+            document.getElementById('uploadTracker').style.display = 'block';
+            
+            // Move to first photo step
+            nextStep(0);
+        }
+
+        // Handle file selection and convert to Base64
+        function handleFiles(files, category) {
+            const preview = document.getElementById(`${category}-preview`);
+            const uploadBtn = document.getElementById(`${category}-upload-btn`);
+            
+            preview.innerHTML = '';
+            uploadedFiles[category] = []; // Reset for new selection
+
+            if (files.length === 0) {
+                 uploadBtn.style.display = 'none';
+                 return;
+            }
+
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = document.createElement('div');
+                    div.className = 'preview-item';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <button class="preview-remove" onclick="removeFile('${category}', ${index})">×</button>
+                    `;
+                    preview.appendChild(div);
+
+                    // Store file data as Base64 string
+                    const base64String = e.target.result.split(',')[1];
+                    uploadedFiles[category][index] = {
+                        name: file.name,
+                        type: file.type,
+                        base64: base64String
+                    };
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            uploadBtn.style.display = 'block';
+        }
+
+
+        // Upload photos to Google Apps Script
+        async function uploadPhotos(category) {
+            const statusDiv = document.getElementById(`${category}-status`);
+            const uploadBtn = document.getElementById(`${category}-upload-btn`);
+            const nextBtn = document.getElementById(`next-${getCurrentStep()}`);
+            
+            statusDiv.className = 'upload-status uploading';
+            statusDiv.innerHTML = '⏳ Uploading photos... Please wait...';
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<span class="spinner"></span> Uploading...';
+            
+            // The Apps Script expects form data, not JSON, for file uploads
+            const payload = {
+                customer: JSON.stringify(customerData),
+                category: category
+            };
+
+            // Add file data to payload
+            uploadedFiles[category].forEach((file, index) => {
+                payload[`file${index}`] = file.base64;
+                payload[`file${index}_contentType`] = file.type;
+            });
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    redirect: "follow",
+                    body: JSON.stringify(payload),
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8",
+                    },
+                });
+
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    statusDiv.className = 'upload-status success';
+                    statusDiv.innerHTML = '✅ Photos uploaded successfully!';
+                    uploadBtn.innerHTML = '✅ Uploaded';
+                    uploadBtn.disabled = true;
+                    
+                    updateTracker(category, true);
+                    uploadStatus[category] = true;
+                    
+                    nextBtn.disabled = false;
+                } else {
+                    throw new Error(result.message || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                statusDiv.className = 'upload-status error';
+                statusDiv.innerHTML = `❌ Upload failed: ${error.message}. Please try again.`;
+                uploadBtn.innerHTML = 'Retry Upload';
+                uploadBtn.disabled = false;
+            }
+        }
+
+        // Skip step (for optional sections)
+        function skipStep(category) {
+            uploadStatus[category] = null;
+            updateTracker(category, 'skipped');
+            document.getElementById(`next-${getCurrentStep()}`).disabled = false;
+            nextStep(getCurrentStep());
+        }
+
+        // Update the upload tracker
+        function updateTracker(category, status) {
+            const trackerItem = document.getElementById(`tracker-${category}`);
+            if (status === true) {
+                trackerItem.className = 'upload-item complete';
+                trackerItem.querySelector('.status-icon').textContent = '✅';
+            } else if (status === 'skipped') {
+                trackerItem.className = 'upload-item complete';
+                trackerItem.querySelector('.status-icon').textContent = '➖';
+            }
+        }
+
+        // Navigation functions
+        function getCurrentStep() {
+            const active = document.querySelector('.step-container.active');
+            return parseInt(active.id.replace('step-', ''));
+        }
+
+        function nextStep(currentStep) {
+            const current = document.getElementById(`step-${currentStep}`);
+            const next = document.getElementById(`step-${currentStep + 1}`);
+            
+            if (next) {
+                current.classList.remove('active');
+                next.classList.add('active');
+                updateProgress(currentStep + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function prevStep(currentStep) {
+            const current = document.getElementById(`step-${currentStep}`);
+            const prev = document.getElementById(`step-${currentStep - 1}`);
+            
+            if (prev) {
+                current.classList.remove('active');
+                prev.classList.add('active');
+                updateProgress(currentStep - 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function updateProgress(step) {
+            const totalSteps = 8;
+            const percent = (step / (totalSteps - 1)) * 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+            
+            const titles = [
+                "Getting Started",
+                "Step 1: Exterior",
+                "Step 2: Outbuildings",
+                "Step 3: Living Room",
+                "Step 4: Kitchen",
+                "Step 5: Plumbing",
+                "Step 6: Electrical",
+                "Complete!"
+            ];
+            document.getElementById('progressText').textContent = titles[step];
+        }
+
+        // Drag and drop handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(e, category) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files, category);
+        }
+
+        // Remove file from preview
+        function removeFile(category, index) {
+            uploadedFiles[category].splice(index, 1);
+            const remainingFiles = uploadedFiles[category].map(f => f); // Need to re-trigger handleFiles
+            handleFiles(remainingFiles, category); // This part is tricky with Base64, simplified for now
+        }
+
+        // Initialize
+        window.onload = function() {
+            updateProgress(0);
+            
+            // Generate reference number
+            const refNum = 'NCG-' + Date.now().toString(36).toUpperCase();
+            document.getElementById('referenceNumber').textContent = refNum;
+        };
+    </script>
+
+</body>
+</html>
