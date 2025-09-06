@@ -631,7 +631,7 @@
 
     <script>
         // Google Apps Script Web App URL
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeSWdMdAqoRkcTTANdMxFkAzLZ-Q5tgj54JlYnQyDAYczOY-qZ_bNqFvNVfZvhRObX/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGpaJ5h7mUeTXZRiWh-X7qemYtDdeI3GntwWLbqQuVFcYFtso7_jXGZu14Ub-w8ogQ/exec';
         
         // Customer data storage
         let customerData = {};
@@ -732,7 +732,6 @@
             uploadBtn.disabled = true;
             uploadBtn.innerHTML = '<span class="spinner"></span> Uploading...';
             
-            // The Apps Script expects form data, not JSON, for file uploads
             const payload = {
                 customer: JSON.stringify(customerData),
                 category: category
@@ -745,14 +744,13 @@
             });
             
             try {
-                // Apps Script Web Apps have limitations with FormData, so we send a JSON payload
-                // The script must be adapted to handle base64 strings instead of file blobs
+                // Apps Script Web Apps have limitations, so we send a JSON payload as text
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     redirect: "follow",
                     body: JSON.stringify(payload),
                     headers: {
-                        "Content-Type": "text/plain;charset=utf-8", // Use text/plain for CORS with Apps Script
+                        "Content-Type": "text/plain;charset=utf-8", 
                     },
                 });
 
@@ -867,9 +865,6 @@
         // Remove file from preview
         function removeFile(category, index) {
             uploadedFiles[category].splice(index, 1);
-            // This is a simplified remove function. For a real app, you'd need to re-render the preview from the array.
-            // For this example, we'll just re-trigger handleFiles with an empty array to clear it.
-            // A more robust solution would be needed for a production environment.
             const preview = document.getElementById(`${category}-preview`);
             preview.children[index].remove();
             if (preview.children.length === 0) {
