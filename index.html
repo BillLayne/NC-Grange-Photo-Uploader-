@@ -374,6 +374,37 @@
             margin-bottom: 10px;
         }
         
+        /* --- API Status Indicator --- */
+        .api-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .api-status.online {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .api-status.offline {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .api-status.testing {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
         /* --- Footer --- */
         .footer {
             background-color: var(--bg-color);
@@ -424,6 +455,12 @@
                 width: 100%;
                 margin-bottom: 10px;
             }
+            
+            .api-status {
+                position: static;
+                margin: 10px auto;
+                width: fit-content;
+            }
         }
         
         /* --- Loading Animation --- */
@@ -445,6 +482,9 @@
     </style>
 </head>
 <body>
+    <!-- API Status Indicator -->
+    <div class="api-status testing" id="apiStatus">🔄 Testing API...</div>
+    
     <div class="container">
         <header class="header">
             <h1>📸 Home Insurance Photo Guide</h1>
@@ -629,13 +669,78 @@
     </div>
 
     <script>
-        // Updated Google Apps Script Web App URL - NEW DEPLOYMENT
+        // Your working Google Apps Script Web App URL
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyyIkaiWGlIJ-XDnDd5AaizkEledLG1xYmjVr-k7DblDwl8Cme_edBp_yr6UeXEdRJ/exec';
         
         let currentStep = 1;
         let selectedCategory = '';
         let selectedFiles = [];
         let customerData = {};
+        let apiOnline = false;
+        
+        // API Status Management
+        function updateApiStatus(status, message) {
+            const statusEl = document.getElementById('apiStatus');
+            statusEl.className = `api-status ${status}`;
+            statusEl.textContent = message;
+            
+            if (status === 'online') {
+                apiOnline = true;
+                setTimeout(() => {
+                    statusEl.style.opacity = '0';
+                    setTimeout(() => {
+                        statusEl.style.display = 'none';
+                    }, 300);
+                }, 3000);
+            } else if (status === 'offline') {
+                apiOnline = false;
+                statusEl.style.display = 'block';
+                statusEl.style.opacity = '1';
+            }
+        }
+        
+        // Test API connection
+        async function testAPI() {
+            try {
+                console.log('Testing API:', GOOGLE_SCRIPT_URL);
+                updateApiStatus('testing', '🔄 Testing API...');
+                
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                
+                console.log('API response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const result = await response.text();
+                console.log('API response:', result.substring(0, 200));
+                
+                try {
+                    const jsonResult = JSON.parse(result);
+                    if (jsonResult.status === 'success') {
+                        updateApiStatus('online', '✅ API Online');
+                        console.log('✅ API test successful');
+                        return true;
+                    }
+                } catch (e) {
+                    console.log('API returned non-JSON, but connection works');
+                }
+                
+                updateApiStatus('online', '✅ API Connected');
+                return true;
+                
+            } catch (error) {
+                console.error('API test failed:', error.message);
+                updateApiStatus('offline', '❌ API Offline');
+                return false;
+            }
+        }
         
         // Navigation functions
         function nextStep() {
@@ -652,7 +757,7 @@
                     alert('Please select at least one photo to upload.');
                     return;
                 }
-                return; // Don't auto-advance from step 3
+                return;
             }
             
             if (currentStep < 4) {
@@ -846,22 +951,11 @@
             }
         }
         
-        // Enhanced upload function with better error handling
+        // Main upload function - simplified for your working API
         async function uploadPhotos(files, category, customerData) {
             const statusEl = document.getElementById('uploadStatus');
             const progressEl = document.getElementById('uploadProgress');
             const progressFill = document.getElementById('progressFill');
-            
-            // Validate inputs
-            if (!files || files.length === 0) {
-                showError('No files selected for upload');
-                return;
-            }
-            
-            if (!customerData.name || !customerData.address) {
-                showError('Customer name and address are required');
-                return;
-            }
             
             try {
                 // Show progress
@@ -874,7 +968,7 @@
                 document.getElementById('uploadBtn').disabled = true;
                 document.getElementById('uploadBtn').innerHTML = '<span class="loading"></span>Uploading...';
                 
-                // Prepare the payload
+                // Prepare payload - using the format your API expects
                 const payload = {
                     customer: JSON.stringify(customerData),
                     category: category,
@@ -897,32 +991,24 @@
                 statusEl.textContent = 'Uploading to server...';
                 progressFill.style.width = '90%';
                 
-                console.log('Sending payload to:', GOOGLE_SCRIPT_URL);
+                console.log('Sending to:', GOOGLE_SCRIPT_URL);
                 console.log('Payload size:', JSON.stringify(payload).length, 'characters');
                 
-                // Make the request with enhanced error handling
+                // Make the request - simplified approach for your working API
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify(payload)
                 });
                 
                 console.log('Response status:', response.status);
-                console.log('Response headers:', [...response.headers.entries()]);
                 
-                // Check if response is ok
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                // Get response text first for debugging
                 const responseText = await response.text();
                 console.log('Raw response:', responseText);
                 
-                // Try to parse as JSON
                 let result;
                 try {
                     result = JSON.parse(responseText);
@@ -936,32 +1022,34 @@
                     statusEl.textContent = '✅ Upload successful!';
                     statusEl.className = 'upload-status status-success';
                     
+                    // Show success details
+                    const successDiv = document.createElement('div');
+                    successDiv.innerHTML = `
+                        <h3>Upload Complete!</h3>
+                        <p><strong>Files uploaded:</strong> ${result.filesUploaded || files.length}</p>
+                        <p><strong>Folder:</strong> <a href="${result.folderUrl}" target="_blank">View in Google Drive</a></p>
+                        <p>You will receive an email confirmation shortly.</p>
+                    `;
+                    successDiv.style.marginTop = '20px';
+                    successDiv.style.padding = '15px';
+                    successDiv.style.backgroundColor = '#d4edda';
+                    successDiv.style.border = '1px solid #c3e6cb';
+                    successDiv.style.borderRadius = '5px';
+                    
+                    statusEl.parentNode.appendChild(successDiv);
+                    
                     // Move to confirmation step
                     setTimeout(() => {
                         nextStep();
-                    }, 1500);
+                    }, 2000);
                     
                 } else {
                     throw new Error(result.message || 'Upload failed');
                 }
                 
             } catch (error) {
-                console.error('Upload error details:', error);
-                
-                // Provide specific error messages based on error type
-                let errorMessage = 'Upload failed. ';
-                
-                if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    errorMessage += 'Network connection problem. Please check your internet connection and try again.';
-                } else if (error.message.includes('CORS')) {
-                    errorMessage += 'Cross-origin request blocked. Please contact support.';
-                } else if (error.message.includes('HTTP error')) {
-                    errorMessage += `Server returned an error (${error.message}). Please try again.`;
-                } else {
-                    errorMessage += error.message;
-                }
-                
-                showError(errorMessage);
+                console.error('Upload error:', error);
+                showError(error.message || 'Upload failed. Please try again.');
                 
                 // Re-enable upload button
                 document.getElementById('uploadBtn').disabled = false;
@@ -974,7 +1062,6 @@
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = () => {
-                    // Remove the data:image/jpeg;base64, prefix
                     const base64 = reader.result.split(',')[1];
                     resolve(base64);
                 };
@@ -983,7 +1070,7 @@
             });
         }
         
-        // Enhanced error display function
+        // Error display function
         function showError(message) {
             const statusEl = document.getElementById('uploadStatus');
             const progressEl = document.getElementById('uploadProgress');
@@ -992,37 +1079,35 @@
             statusEl.textContent = `❌ ${message}`;
             statusEl.className = 'upload-status status-error';
             
-            // Hide progress bar
             document.getElementById('progressFill').style.width = '0%';
+            
+            // Show contact info
+            const errorDiv = document.createElement('div');
+            errorDiv.innerHTML = `
+                <p style="margin-top: 10px; font-size: 0.9em;">
+                    <strong>Need Help?</strong><br>
+                    📞 Call: (336) 835-1993<br>
+                    ✉️ Email: Save@BillLayneInsurance.com
+                </p>
+            `;
+            
+            const existingErrors = statusEl.parentNode.querySelectorAll('div[style*="margin-top: 10px"]');
+            existingErrors.forEach(div => div.remove());
+            
+            statusEl.parentNode.appendChild(errorDiv);
         }
         
-        // Test function to verify the API is working
-        async function testAPI() {
-            try {
-                console.log('Testing API endpoint:', GOOGLE_SCRIPT_URL);
-                
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
-                
-                console.log('Test response status:', response.status);
-                const result = await response.text();
-                console.log('Test response:', result);
-                
-                return response.ok;
-            } catch (error) {
-                console.error('API test failed:', error);
-                return false;
-            }
-        }
-        
-        // Call test function when page loads (for debugging)
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 NC Grange Photo Upload System Loading...');
+            console.log('📡 API Endpoint:', GOOGLE_SCRIPT_URL);
+            
+            // Test API connection
             testAPI().then(success => {
-                console.log('API test result:', success ? 'PASSED' : 'FAILED');
-                if (!success) {
-                    console.warn('API test failed - there may be connectivity issues');
+                if (success) {
+                    console.log('✅ System ready for photo uploads');
+                } else {
+                    console.log('⚠️ API test failed, but uploads may still work');
                 }
             });
         });
