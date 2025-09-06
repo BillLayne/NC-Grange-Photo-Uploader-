@@ -631,7 +631,7 @@
 
     <script>
         // Google Apps Script Web App URL
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCPAJfz3yGpjAU7v1iyIWDGEtrqdnp-jixA_cECYfz_sqO4OiOVYSn_OJb92G3ew_k/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeSWdMdAqoRkcTTANdMxFkAzLZ-Q5tgj54JlYnQyDAYczOY-qZ_bNqFvNVfZvhRObX/exec';
         
         // Customer data storage
         let customerData = {};
@@ -745,12 +745,14 @@
             });
             
             try {
+                // Apps Script Web Apps have limitations with FormData, so we send a JSON payload
+                // The script must be adapted to handle base64 strings instead of file blobs
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     redirect: "follow",
                     body: JSON.stringify(payload),
                     headers: {
-                        "Content-Type": "text/plain;charset=utf-8",
+                        "Content-Type": "text/plain;charset=utf-8", // Use text/plain for CORS with Apps Script
                     },
                 });
 
@@ -865,9 +867,16 @@
         // Remove file from preview
         function removeFile(category, index) {
             uploadedFiles[category].splice(index, 1);
-            const remainingFiles = uploadedFiles[category].map(f => f); // Need to re-trigger handleFiles
-            handleFiles(remainingFiles, category); // This part is tricky with Base64, simplified for now
+            // This is a simplified remove function. For a real app, you'd need to re-render the preview from the array.
+            // For this example, we'll just re-trigger handleFiles with an empty array to clear it.
+            // A more robust solution would be needed for a production environment.
+            const preview = document.getElementById(`${category}-preview`);
+            preview.children[index].remove();
+            if (preview.children.length === 0) {
+                 document.getElementById(`${category}-upload-btn`).style.display = 'none';
+            }
         }
+
 
         // Initialize
         window.onload = function() {
